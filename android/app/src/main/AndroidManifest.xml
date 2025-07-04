@@ -7,7 +7,7 @@
 
 
     <application
-        android:label="pdfreader"
+        android:label="PDF Reader"
         android:name="${applicationName}"
         android:icon="@mipmap/ic_launcher"
         android:requestLegacyExternalStorage="true"> <!-- For Android 10 support -->

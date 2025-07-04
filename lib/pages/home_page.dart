@@ -57,7 +57,7 @@ class _HomePageState extends State<HomePage> {
 
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: Colors.deepPurple,
+        backgroundColor: Color(0xFFF34C6E),
         centerTitle: true,
         title: Text("PDF-Reader",style: TextStyle(color: Colors.white,fontWeight: FontWeight.bold),),
       ),
@@ -78,7 +78,7 @@ class _HomePageState extends State<HomePage> {
 
       }),
       floatingActionButton: FloatingActionButton(onPressed: openpdffile,
-        backgroundColor: Colors.deepPurple,
+        backgroundColor: Color(0xFFF34C6E),
       child: Icon(Icons.add,color: Colors.white       ,),
       ),
     );
