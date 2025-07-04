@@ -1,8 +1,10 @@
 import 'package:file_picker/file_picker.dart';
 import 'dart:io';
 import 'package:flutter/material.dart';
+import 'package:pdfreader/helper/share_files.dart';
 import 'package:pdfreader/pages/pdf_viewer_page.dart';
 import 'package:permission_handler/permission_handler.dart';
+
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
 
@@ -12,6 +14,9 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
   List<File> openpdf = [];
+  bool pressed = true;
+
+
   void openpdffile() async {
     print('openpdffile called');
 
@@ -46,7 +51,10 @@ class _HomePageState extends State<HomePage> {
       setState(() {
         openpdf.add(file);
       });
-      Navigator.push(context, MaterialPageRoute(builder: (_) => PdfViewerPage(file: file)));
+      Navigator.push(
+        context,
+        MaterialPageRoute(builder: (_) => PdfViewerPage(file: file)),
+      );
     } else {
       print('No file selected');
     }
@@ -54,32 +62,74 @@ class _HomePageState extends State<HomePage> {
 
   @override
   Widget build(BuildContext context) {
-
+    var device = MediaQuery.of(context).size;
     return Scaffold(
       appBar: AppBar(
+        leading: Icon(Icons.more_vert),
         backgroundColor: Color(0xFFF34C6E),
+        iconTheme: IconThemeData(color: Colors.white),
         centerTitle: true,
-        title: Text("PDF-Reader",style: TextStyle(color: Colors.white,fontWeight: FontWeight.bold),),
+        title: Text(
+          "PDF-Reader",
+          style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
+        ),
       ),
-      body:  ListView.builder(
-          itemCount: openpdf.length ,
+      body: Padding(
+        padding: const EdgeInsets.symmetric(vertical: 8),
+        child: pressed
+            ? Center(
+                child: Text(
+                  "Press the Plus button to open a PDF file.",
+                  style: TextStyle(
+                    color: Color(0xFFF34C6E),
+                    fontWeight: FontWeight.bold,
+                    fontSize: device.width * .045,
+                  ),
+                ),
+              )
+            : ListView.builder(
+                itemCount: openpdf.length,
 
-          itemBuilder: (context,index)
-      {
-        final file = openpdf[index];
-  return ListTile(
-    leading: Icon(Icons.picture_as_pdf),
-          title: Text(file.path.split('/').last),
-    onTap: ()=>{
-    Navigator.push(context, MaterialPageRoute(builder: (_) => PdfViewerPage(file: file)))
-    },
-        );
+                itemBuilder: (context, index) {
+                  final file = openpdf[index];
+                  return Card(
+                    child: ListTile(
+                      selectedColor: Colors.grey,
+                      leading: Image.asset(
+                        "asset/logo.png",
+                        height: 24,
+                        width: 24,
+                      ),
+                      title: Text(file.path.split('/').last),
+                      onTap: () => {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (_) => PdfViewerPage(file: file),
+                          ),
+                        ),
+                      },
+                      trailing: InkWell(
+                        onTap: () {
+                          Sharepdf.sharepdf(file.path);
+                        },
+                        child: Icon(Icons.share),
+                      ),
+                    ),
+                  );
+                },
+              ),
+      ),
 
-
-      }),
-      floatingActionButton: FloatingActionButton(onPressed: openpdffile,
+      floatingActionButton: FloatingActionButton(
+        child: Icon(Icons.add, color: Colors.white),
         backgroundColor: Color(0xFFF34C6E),
-      child: Icon(Icons.add,color: Colors.white       ,),
+        onPressed: () {
+          openpdffile();
+          setState(() {
+            pressed = false;
+          });
+        },
       ),
     );
   }
